@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pedro Marques — Portfolio
+
+Personal portfolio featuring a 3D galaxy theme with an interactive solar system project showcase.
+
+**Live:** [pedromarques.dev](https://pedromarques.dev)
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, React 19)
+- **3D:** React Three Fiber, Drei, Three.js
+- **Animation:** GSAP (ScrollTrigger), Framer Motion
+- **Scrolling:** Lenis (smooth scroll)
+- **Styling:** Tailwind CSS 4
+- **Language:** TypeScript
+
+## Features
+
+- Interactive 3D galaxy background with adaptive quality detection
+- Solar system visualization for project showcase
+- Smooth scroll-driven animations
+- Custom cursor, magnetic buttons, glass cards
+- Full SEO (Open Graph, sitemap, robots)
+- Responsive design with mobile optimizations
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/            # Pages, layout, SEO, providers
+├── components/
+│   ├── layout/     # Navigation, Footer, CustomCursor, Preloader
+│   ├── sections/   # Hero, About, Projects, Skills, Contact
+│   ├── three/      # Galaxy, StarField, SolarSystem, ScrollCamera
+│   └── ui/         # GlassCard, ScrollReveal, GradientText, MagneticButton
+├── hooks/          # useMediaQuery, useScrollProgress, useMousePosition
+├── lib/            # Constants, utilities, GSAP config, quality detection
+└── types/          # TypeScript interfaces
+```
 
-## Learn More
+## Contact
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Email:** pedrom02.dev@gmail.com
+- **LinkedIn:** [Pedro Marques](https://www.linkedin.com/in/pedro-marques-056baa366/)
+- **GitHub:** [Pedrom2002](https://github.com/Pedrom2002)
