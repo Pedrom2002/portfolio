@@ -1,65 +1,73 @@
-import Image from "next/image";
+import Navigation from "@/components/layout/Navigation";
+import CustomCursor from "@/components/layout/CustomCursor";
+import Footer from "@/components/layout/Footer";
+import Hero from "@/components/sections/Hero";
+import About from "@/components/sections/About";
+import { ProjectsHeader, ProjectDetail } from "@/components/sections/Projects";
+import ProjectSnapZone from "@/components/sections/ProjectSnapZone";
+import Skills from "@/components/sections/Skills";
+import Contact from "@/components/sections/Contact";
+import GalaxyBackground from "@/components/three/GalaxyBackground";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <GalaxyBackground />
+
+      <main className="relative z-10">
+        <Navigation />
+
+        <section id="hero" aria-label="Introduction" className="h-screen">
+          <Hero />
+        </section>
+
+        <section id="about" aria-label="About me" className="flex h-screen items-center overflow-hidden">
+          <div className="w-full rounded-3xl bg-galaxy-darker/70 py-4 backdrop-blur-sm">
+            <About />
+          </div>
+        </section>
+
+        {/* Solar system overview */}
+        <section id="projects" aria-label="Featured projects" className="flex h-screen items-center overflow-hidden">
+          <div className="w-full">
+            <ProjectsHeader />
+          </div>
+        </section>
+
+        {/* Individual planet/project sections — planet on the left, info on the right */}
+        <ProjectSnapZone>
+          <section id="project-0" aria-label="Project: Dueit" className="h-screen">
+            <ProjectDetail index={0} />
+          </section>
+
+          <section id="project-1" aria-label="Project: Clutch Labs" className="h-screen">
+            <ProjectDetail index={1} />
+          </section>
+
+          <section id="project-2" aria-label="Project: RushTalk" className="h-screen">
+            <ProjectDetail index={2} />
+          </section>
+
+          <section id="project-3" aria-label="Project: Energy Forecast PT" className="h-screen">
+            <ProjectDetail index={3} />
+          </section>
+        </ProjectSnapZone>
+
+        <section id="skills" aria-label="Technical skills" className="flex h-screen items-center overflow-hidden">
+          <div className="w-full rounded-3xl bg-galaxy-darker/70 py-4 backdrop-blur-sm">
+            <Skills />
+          </div>
+        </section>
+
+        <section id="contact" aria-label="Contact" className="flex h-screen items-center overflow-hidden -mt-32">
+          <div className="w-full">
+            <Contact />
+            <Footer />
+          </div>
+        </section>
       </main>
-    </div>
+
+      <CustomCursor />
+    </>
   );
 }
