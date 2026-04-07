@@ -21,14 +21,14 @@ export default function Home() {
           <Hero />
         </section>
 
-        <section id="about" aria-label="About me" className="flex min-h-screen items-center overflow-hidden py-20 lg:py-0">
+        <section id="about" aria-label="About me" className="flex h-screen items-center overflow-hidden">
           <div className="w-full rounded-3xl bg-galaxy-darker/70 py-4 backdrop-blur-sm">
             <About />
           </div>
         </section>
 
         {/* Solar system overview */}
-        <section id="projects" aria-label="Featured projects" className="flex min-h-screen items-center overflow-hidden py-20 lg:py-0">
+        <section id="projects" aria-label="Featured projects" className="flex h-screen items-center overflow-hidden">
           <div className="w-full">
             <ProjectsHeader />
           </div>
@@ -36,30 +36,30 @@ export default function Home() {
 
         {/* Individual planet/project sections — planet on the left, info on the right */}
         <ProjectSnapZone>
-          <section id="project-0" aria-label="Project: Dueit" className="min-h-screen py-20 lg:py-0 lg:h-screen">
+          <section id="project-0" aria-label="Project: Dueit" className="h-screen">
             <ProjectDetail index={0} />
           </section>
 
-          <section id="project-1" aria-label="Project: Clutch Labs" className="min-h-screen py-20 lg:py-0 lg:h-screen">
+          <section id="project-1" aria-label="Project: Clutch Labs" className="h-screen">
             <ProjectDetail index={1} />
           </section>
 
-          <section id="project-2" aria-label="Project: RushTalk" className="min-h-screen py-20 lg:py-0 lg:h-screen">
+          <section id="project-2" aria-label="Project: RushTalk" className="h-screen">
             <ProjectDetail index={2} />
           </section>
 
-          <section id="project-3" aria-label="Project: Energy Forecast PT" className="min-h-screen py-20 lg:py-0 lg:h-screen">
+          <section id="project-3" aria-label="Project: Energy Forecast PT" className="h-screen">
             <ProjectDetail index={3} />
           </section>
         </ProjectSnapZone>
 
-        <section id="skills" aria-label="Technical skills" className="flex min-h-screen items-center overflow-hidden py-20 lg:py-0">
+        <section id="skills" aria-label="Technical skills" className="flex h-screen items-center overflow-hidden">
           <div className="w-full rounded-3xl bg-galaxy-darker/70 py-4 backdrop-blur-sm">
             <Skills />
           </div>
         </section>
 
-        <section id="contact" aria-label="Contact" className="flex min-h-screen items-center overflow-hidden -mt-16 lg:-mt-32">
+        <section id="contact" aria-label="Contact" className="flex h-screen items-center overflow-hidden -mt-32">
           <div className="w-full">
             <Contact />
             <Footer />
