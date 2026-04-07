@@ -287,27 +287,16 @@ function SaturnRing({ size }: { size: number }) {
   return (
     <mesh rotation={[Math.PI * 0.45, 0, 0]}>
       <ringGeometry args={[size * 1.3, size * 2.3, q.orbitRingPoints]} />
-      {q.tier === "low" ? (
-        <meshBasicMaterial
-          map={ringTexture}
-          alphaMap={ringTexture}
-          transparent
-          opacity={0.7}
-          side={THREE.DoubleSide}
-          depthWrite={false}
-        />
-      ) : (
-        <meshStandardMaterial
-          map={ringTexture}
-          alphaMap={ringTexture}
-          transparent
-          opacity={0.8}
-          side={THREE.DoubleSide}
-          depthWrite={false}
-          roughness={0.85}
-          metalness={0.0}
-        />
-      )}
+      <meshStandardMaterial
+        map={ringTexture}
+        alphaMap={ringTexture}
+        transparent
+        opacity={0.8}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+        roughness={0.85}
+        metalness={0.0}
+      />
     </mesh>
   );
 }

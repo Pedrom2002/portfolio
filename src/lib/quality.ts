@@ -40,29 +40,29 @@ const CONFIGS: Record<QualityTier, QualityConfig> = {
   },
   medium: {
     tier: "medium",
-    particleCount: 10000,
-    starCount1: 3000,
-    starCount2: 1000,
-    sphereSegments: 24,
-    atmosphereSegments: 16,
-    orbitRingPoints: 48,
+    particleCount: 18000,
+    starCount1: 5000,
+    starCount2: 2000,
+    sphereSegments: 32,
+    atmosphereSegments: 24,
+    orbitRingPoints: 64,
     dpr: [1, 1.2],
-    postProcessing: false,
+    postProcessing: true,
     mipmapBlur: false,
-    bloomIntensity: 0,
-    showClouds: false,
+    bloomIntensity: 0.5,
+    showClouds: true,
     showCorona: true,
     mouseInteraction: "reduced",
     customCursor: "dot",
   },
   low: {
     tier: "low",
-    particleCount: 3000,
-    starCount1: 1000,
+    particleCount: 6000,
+    starCount1: 2000,
     starCount2: 0,
-    sphereSegments: 12,
-    atmosphereSegments: 12,
-    orbitRingPoints: 24,
+    sphereSegments: 16,
+    atmosphereSegments: 16,
+    orbitRingPoints: 32,
     dpr: 1,
     postProcessing: false,
     mipmapBlur: false,
@@ -124,11 +124,10 @@ function detectTier(): QualityTier {
     if (isWeak) score += 3;
   }
 
-  // Mobile heuristic — touch devices with small screens are almost always low-end for 3D
+  // Mobile heuristic
   const isCoarse = window.matchMedia?.("(pointer: coarse)").matches;
   const isSmallScreen = window.screen.width < 768;
-  if (isCoarse && isSmallScreen) score += 4;
-  else if (isCoarse) score += 2; // tablets
+  if (isCoarse && isSmallScreen) score += 2;
 
   if (score >= 5) return "low";
   if (score >= 2) return "medium";

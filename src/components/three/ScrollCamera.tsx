@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { planetPositions } from "./SolarSystem";
@@ -15,21 +15,15 @@ const SC = { x: 30, y: 0, z: 0 };
 const SUN = new THREE.Vector3(SC.x, SC.y, SC.z);
 const UP = new THREE.Vector3(0, 1, 0);
 
-// Reusable vectors for getPlanetViewOffset to avoid allocations
-const _radial = new THREE.Vector3();
-const _tangent = new THREE.Vector3();
-const _offset = new THREE.Vector3();
-
 // Dynamic offset: positions camera so the sun always stays on the LEFT side of screen
 function getPlanetViewOffset(planetPos: THREE.Vector3): THREE.Vector3 {
-  _radial.subVectors(planetPos, SUN).normalize();
-  _tangent.crossVectors(UP, _radial).normalize();
-  _offset.set(
-    _tangent.x * 4 + _radial.x * 2,
+  const radial = new THREE.Vector3().subVectors(planetPos, SUN).normalize();
+  const tangent = new THREE.Vector3().crossVectors(UP, radial).normalize();
+  return new THREE.Vector3(
+    tangent.x * 4 + radial.x * 2,
     1.5,
-    _tangent.z * 4 + _radial.z * 2,
+    tangent.z * 4 + radial.z * 2,
   );
-  return _offset;
 }
 
 const S = 1 / 8;
@@ -49,27 +43,30 @@ const KEYFRAMES = [
 // Reusable vectors to avoid GC pressure per frame
 const _targetPos = new THREE.Vector3();
 const _targetLook = new THREE.Vector3();
-const _kfPos = new THREE.Vector3();
-const _kfLook = new THREE.Vector3();
-const _fallbackPos = new THREE.Vector3();
-const _fallbackLook = new THREE.Vector3();
 
 function getKeyframeTarget(kf: typeof KEYFRAMES[0]): { pos: THREE.Vector3; look: THREE.Vector3 } {
   if (kf.planet >= 0 && kf.planet < planetPositions.length) {
     const pp = planetPositions[kf.planet];
     if (pp.lengthSq() < 0.01) {
-      _fallbackPos.set(SC.x, 8, SC.z + 18);
-      _fallbackLook.set(SC.x, 0, SC.z);
-      return { pos: _fallbackPos, look: _fallbackLook };
+      return {
+        pos: new THREE.Vector3(SC.x, 8, SC.z + 18),
+        look: new THREE.Vector3(SC.x, 0, SC.z),
+      };
     }
     const offset = getPlanetViewOffset(pp);
-    _kfPos.set(pp.x + offset.x, pp.y + offset.y, pp.z + offset.z);
-    _kfLook.copy(pp);
-    return { pos: _kfPos, look: _kfLook };
+    return {
+      pos: new THREE.Vector3(
+        pp.x + offset.x,
+        pp.y + offset.y,
+        pp.z + offset.z,
+      ),
+      look: pp.clone(),
+    };
   }
-  _kfPos.set(kf.pos[0], kf.pos[1], kf.pos[2]);
-  _kfLook.set(kf.look[0], kf.look[1], kf.look[2]);
-  return { pos: _kfPos, look: _kfLook };
+  return {
+    pos: new THREE.Vector3(kf.pos[0], kf.pos[1], kf.pos[2]),
+    look: new THREE.Vector3(kf.look[0], kf.look[1], kf.look[2]),
+  };
 }
 
 export default function ScrollCamera() {
@@ -77,25 +74,15 @@ export default function ScrollCamera() {
   const currentPos = useRef(new THREE.Vector3(0, 4, 18));
   const currentLook = useRef(new THREE.Vector3(0, 0, 0));
   const ready = useRef(false);
-  const scrollRef = useRef(0);
 
-  // Cache scroll progress via event listener instead of reading DOM every frame
-  useEffect(() => {
-    const update = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      scrollRef.current = max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
+  const getScrollProgress = useCallback(() => {
+    if (typeof window === "undefined") return 0;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    return max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
   }, []);
 
   useFrame(() => {
-    const progress = scrollRef.current;
+    const progress = getScrollProgress();
 
     let fromIdx = 0;
     for (let i = KEYFRAMES.length - 2; i >= 0; i--) {

@@ -15,8 +15,6 @@ export default function StarField() {
 
   useFrame(() => {
     if (!groupRef.current) return;
-    // Skip mouse-driven rotation on low/medium tiers (mobile)
-    if (q.mouseInteraction === "off") return;
     smooth.current.x += (mouse.current.normalizedX - smooth.current.x) * 0.015;
     smooth.current.y += (mouse.current.normalizedY - smooth.current.y) * 0.015;
 
