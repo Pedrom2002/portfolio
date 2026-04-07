@@ -34,8 +34,8 @@ export function ProjectDetail({ index }: { index: number }) {
   if (!project) return null;
 
   return (
-    <div className="flex h-full items-center justify-end px-6 sm:px-12 lg:pr-24 lg:pl-[42%]">
-      <div className="w-full max-w-xl rounded-3xl border border-white/[0.04] bg-[#050812]/90 p-8 text-center backdrop-blur-xl sm:p-10">
+    <div className="flex h-full items-center justify-center px-4 sm:px-12 lg:justify-end lg:pr-24 lg:pl-[42%]">
+      <div className="w-full max-w-xl rounded-3xl border border-white/[0.04] bg-[#050812]/90 p-6 text-center backdrop-blur-xl sm:p-10">
         {/* Badge */}
         <ScrollReveal>
           <span className="badge rounded-full border border-primary/20 bg-primary/5 text-xs font-semibold uppercase tracking-widest text-primary-light">
@@ -46,26 +46,25 @@ export function ProjectDetail({ index }: { index: number }) {
         {/* Logo + Title */}
         <ScrollReveal delay={0.05}>
           <div className="mt-6 flex flex-col items-center gap-4">
+            {/* Logo — stacked on mobile, floating on desktop */}
+            {project.image && (
+              <div className={`overflow-hidden rounded-2xl border p-3 lg:absolute lg:right-full lg:mr-6 ${
+                project.id === "clutchlabs"
+                  ? "border-white/10 bg-white/90 shadow-lg shadow-primary/10"
+                  : "border-glass-border bg-galaxy-dark/50"
+              }`}>
+                <Image
+                  src={project.image}
+                  alt={`${project.title} logo`}
+                  width={96}
+                  height={96}
+                  className="rounded-xl"
+                />
+              </div>
+            )}
             <div className="relative flex items-center justify-center">
-              {project.image && (
-                <div className="w-0 flex items-center overflow-visible">
-                  <div className={`relative right-36 shrink-0 overflow-hidden rounded-2xl border p-3 ${
-                    project.id === "clutchlabs"
-                      ? "border-white/10 bg-white/90 shadow-lg shadow-primary/10"
-                      : "border-glass-border bg-galaxy-dark/50"
-                  }`}>
-                    <Image
-                      src={project.image}
-                      alt={`${project.title} logo`}
-                      width={96}
-                      height={96}
-                      className="rounded-xl"
-                    />
-                  </div>
-                </div>
-              )}
               <div className="flex flex-col items-center gap-2">
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center justify-center gap-3">
                   <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
                     {project.title}
                   </h3>

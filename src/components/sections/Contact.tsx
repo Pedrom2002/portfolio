@@ -46,7 +46,7 @@ export default function Contact() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <div className="mt-28">
+          <div className="mt-12 sm:mt-28">
             <MagneticButton href={`mailto:${personalInfo.email}`} magneticStrength={0.4}>
               <Mail size={18} />
               Say Hello
@@ -57,7 +57,7 @@ export default function Contact() {
 
         {/* Social links */}
         <ScrollReveal delay={0.3}>
-          <div className="mt-24 flex items-center justify-center gap-3">
+          <div className="mt-10 flex items-center justify-center gap-3 sm:mt-24">
             {personalInfo.socials.map((social) => {
               const Icon = iconMap[social.icon] || Mail;
               return (
