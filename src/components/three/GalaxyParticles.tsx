@@ -151,9 +151,9 @@ export default function GalaxyParticles() {
     const damping = 0.94;
     const returnStrength = 0.002;
 
-    // MEDIUM tier: process every 3rd particle for mouse interaction, update colors every 2nd frame
-    const step = q.mouseInteraction === "reduced" ? 3 : 1;
-    const skipColorUpdate = q.mouseInteraction === "reduced" && frameCount.current % 2 !== 0;
+    // MEDIUM tier: process every 5th particle, update colors every 3rd frame
+    const step = q.mouseInteraction === "reduced" ? 5 : 1;
+    const skipColorUpdate = q.mouseInteraction === "reduced" && frameCount.current % 3 !== 0;
     frameCount.current++;
 
     for (let i = 0; i < count; i += step) {
