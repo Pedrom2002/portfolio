@@ -70,8 +70,8 @@ export const projects: Project[] = [
     id: "energy-forecast",
     title: "Energy Forecast PT",
     description:
-      "A machine learning system that predicts energy consumption across 5 Portuguese regions. Achieves 0.86% error rate (R² 0.9995) using XGBoost with 68+ engineered features on 175K+ samples. Deployed with FastAPI, Docker, and automated CI/CD.",
-    technologies: ["Python", "XGBoost", "FastAPI", "Docker"],
+      "A full-stack energy consumption forecasting system for Portugal by region. Uses gradient-boosted models (CatBoost, XGBoost, LightGBM) with Optuna tuning on 175K+ hourly samples, achieving R² 0.9913 and 90.7% RMSE improvement over baselines. Features a React 19 frontend, FastAPI backend with conformal prediction intervals, SHAP explainability, and 745+ tests.",
+    technologies: ["Python", "CatBoost", "React", "FastAPI", "Docker"],
     image: "",
     githubUrl: "https://github.com/Pedrom2002/energy-forecast-pt",
     featured: true,
