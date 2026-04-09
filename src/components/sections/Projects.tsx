@@ -46,43 +46,35 @@ export function ProjectDetail({ index }: { index: number }) {
         {/* Logo + Title */}
         <ScrollReveal delay={0.05}>
           <div className="mt-6 flex flex-col items-center gap-4">
-            <div className="relative flex items-center justify-center">
-              {project.image && (
-                <div className="w-0 flex items-center overflow-visible">
-                  <div className={`relative right-36 shrink-0 overflow-hidden rounded-2xl border p-3 ${
-                    project.id === "clutchlabs"
-                      ? "border-white/10 bg-white/90 shadow-lg shadow-primary/10"
-                      : "border-glass-border bg-galaxy-dark/50"
-                  }`}>
-                    <Image
-                      src={project.image}
-                      alt={`${project.title} logo`}
-                      width={96}
-                      height={96}
-                      className="rounded-xl"
-                    />
-                  </div>
-                </div>
-              )}
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex items-center gap-3">
-                  <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
-                    {project.title}
-                  </h3>
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="badge gap-1.5 rounded-full bg-white/10 text-xs font-semibold text-white transition-all hover:bg-white/20 hover:scale-105"
-                    >
-                      <Github size={14} />
-                      Github repo link
-                    </a>
-                  )}
-                </div>
+            {project.image && (
+              <div className={`overflow-hidden rounded-2xl border p-3 ${
+                project.id === "clutchlabs"
+                  ? "border-white/10 bg-white/90 shadow-lg shadow-primary/10"
+                  : "border-glass-border bg-galaxy-dark/50"
+              }`}>
+                <Image
+                  src={project.image}
+                  alt={`${project.title} logo`}
+                  width={96}
+                  height={96}
+                  className="rounded-xl"
+                />
               </div>
-            </div>
+            )}
+            <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
+              {project.title}
+            </h3>
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="badge gap-1.5 rounded-full bg-white/10 text-xs font-semibold text-white transition-all hover:bg-white/20 hover:scale-105"
+              >
+                <Github size={14} />
+                Github repo link
+              </a>
+            )}
           </div>
         </ScrollReveal>
 
