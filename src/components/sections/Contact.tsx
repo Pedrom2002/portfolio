@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Linkedin, Mail, ArrowUpRight } from "lucide-react";
+import { Github, Linkedin, Mail, ArrowUpRight, Download } from "lucide-react";
 import { personalInfo } from "@/lib/constants";
 import GradientText from "@/components/ui/GradientText";
 import ScrollReveal from "@/components/ui/ScrollReveal";
@@ -55,9 +55,31 @@ export default function Contact() {
           </div>
         </ScrollReveal>
 
+        {/* CV downloads */}
+        <ScrollReveal delay={0.25}>
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="/Pedro_Marques_CV_Software_Developer.pdf"
+              download
+              className="group flex items-center gap-2 rounded-xl border border-glass-border bg-galaxy-dark/50 px-5 py-3 text-sm font-medium text-text-secondary transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:text-white hover:shadow-lg hover:shadow-primary/10"
+            >
+              <Download size={16} className="transition-colors group-hover:text-primary" />
+              Software Engineering CV
+            </a>
+            <a
+              href="/Pedro_Marques_CV_Data_Scientist.pdf"
+              download
+              className="group flex items-center gap-2 rounded-xl border border-glass-border bg-galaxy-dark/50 px-5 py-3 text-sm font-medium text-text-secondary transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:text-white hover:shadow-lg hover:shadow-primary/10"
+            >
+              <Download size={16} className="transition-colors group-hover:text-primary" />
+              Data Science CV
+            </a>
+          </div>
+        </ScrollReveal>
+
         {/* Social links */}
-        <ScrollReveal delay={0.3}>
-          <div className="mt-24 flex items-center justify-center gap-3">
+        <ScrollReveal delay={0.35}>
+          <div className="mt-12 flex items-center justify-center gap-3">
             {personalInfo.socials.map((social) => {
               const Icon = iconMap[social.icon] || Mail;
               return (
@@ -79,7 +101,7 @@ export default function Contact() {
           </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.35}>
+        <ScrollReveal delay={0.4}>
           <p className="mt-6 text-xs font-medium uppercase tracking-widest text-text-secondary/40">
             {personalInfo.email}
           </p>
