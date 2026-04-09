@@ -77,15 +77,10 @@ export function ProjectDetail({ index }: { index: number }) {
                       className="badge gap-1.5 rounded-full bg-white/10 text-xs font-semibold text-white transition-all hover:bg-white/20 hover:scale-105"
                     >
                       <Github size={14} />
-                      GitHub
+                      Github repo link
                     </a>
                   )}
                 </div>
-                {project.hasDemo && (
-                  <span className="badge gap-1.5 rounded-full bg-primary/20 text-xs font-semibold text-primary transition-all">
-                    ✦ Live demo inside
-                  </span>
-                )}
               </div>
             </div>
           </div>
