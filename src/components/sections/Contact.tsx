@@ -56,7 +56,7 @@ export default function Contact() {
         </ScrollReveal>
 
         {/* CV downloads */}
-        <ScrollReveal delay={0.25}>
+        <ScrollReveal delay={0.15}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <a
               href="/Pedro_Marques_CV_Software_Developer.pdf"
@@ -78,7 +78,7 @@ export default function Contact() {
         </ScrollReveal>
 
         {/* Social links */}
-        <ScrollReveal delay={0.35}>
+        <ScrollReveal delay={0.2}>
           <div className="mt-10 flex items-center justify-center gap-3">
             {personalInfo.socials.map((social) => {
               const Icon = iconMap[social.icon] || Mail;
@@ -101,7 +101,7 @@ export default function Contact() {
           </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.4}>
+        <ScrollReveal delay={0.25}>
           <p className="mt-6 text-xs font-medium uppercase tracking-widest text-text-secondary/40">
             {personalInfo.email}
           </p>
