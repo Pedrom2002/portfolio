@@ -70,8 +70,8 @@ export const projects: Project[] = [
     id: "energy-forecast",
     title: "Energy Forecast PT",
     description:
-      "A full-stack energy consumption forecasting system for Portugal by region. Uses gradient-boosted models (CatBoost, XGBoost, LightGBM) with Optuna tuning on 175K+ hourly samples, achieving R² 0.9913 and 90.7% RMSE improvement over baselines. Features a React 19 frontend, FastAPI backend with conformal prediction intervals, SHAP explainability, and 745+ tests.",
-    technologies: ["Python", "CatBoost", "React", "FastAPI", "Docker"],
+      "A production-grade ML system for predicting hourly electricity consumption across 5 Portuguese regions. Uses a 12-stage pipeline with CatBoost, XGBoost and LightGBM, Optuna tuning (50 trials), and 39–52 engineered features on 175K+ hourly samples — achieving 4.30% MAPE and R² 0.9914. Includes a React 19 + TypeScript frontend, FastAPI backend with conformal prediction intervals (93.1% coverage), SHAP explainability, drift detection, and 816+ tests across backend and frontend.",
+    technologies: ["Python", "LightGBM", "React", "TypeScript", "FastAPI", "Docker"],
     image: "",
     githubUrl: "https://github.com/Pedrom2002/energy-forecast-pt",
     featured: true,
