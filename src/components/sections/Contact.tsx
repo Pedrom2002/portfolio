@@ -46,7 +46,7 @@ export default function Contact() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <div className="mt-28">
+          <div className="mt-14">
             <MagneticButton href={`mailto:${personalInfo.email}`} magneticStrength={0.4}>
               <Mail size={18} />
               Say Hello
@@ -57,7 +57,7 @@ export default function Contact() {
 
         {/* CV downloads */}
         <ScrollReveal delay={0.25}>
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <a
               href="/Pedro_Marques_CV_Software_Developer.pdf"
               download
@@ -79,7 +79,7 @@ export default function Contact() {
 
         {/* Social links */}
         <ScrollReveal delay={0.35}>
-          <div className="mt-12 flex items-center justify-center gap-3">
+          <div className="mt-10 flex items-center justify-center gap-3">
             {personalInfo.socials.map((social) => {
               const Icon = iconMap[social.icon] || Mail;
               return (
