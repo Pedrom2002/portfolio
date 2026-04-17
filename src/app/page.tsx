@@ -40,7 +40,7 @@ export default function Home() {
             <ProjectDetail index={0} />
           </section>
 
-          <section id="project-1" aria-label="Project: Clutch Labs" className="h-screen">
+          <section id="project-1" aria-label="Project: Energy Forecast PT" className="h-screen">
             <ProjectDetail index={1} />
           </section>
 
@@ -48,7 +48,7 @@ export default function Home() {
             <ProjectDetail index={2} />
           </section>
 
-          <section id="project-3" aria-label="Project: Energy Forecast PT" className="h-screen">
+          <section id="project-3" aria-label="Project: Clutch Labs" className="h-screen">
             <ProjectDetail index={3} />
           </section>
         </ProjectSnapZone>
