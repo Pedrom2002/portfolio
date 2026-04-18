@@ -2,11 +2,15 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// Dev needs 'unsafe-eval' for React Refresh / error overlay; prod must not.
-// Dev needs ws: in connect-src for HMR.
+// 'unsafe-eval' is required by the 3D stack in production too:
+// - three.js compiles shader helpers via `new Function(...)` at runtime
+// - @react-three/fiber / drei / postprocessing rely on the same
+// - gsap uses Function() for property accessors
+// Dev additionally needs it for React Refresh / error overlay, and ws: in
+// connect-src for HMR.
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
