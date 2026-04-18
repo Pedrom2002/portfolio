@@ -25,6 +25,13 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
   return t * t * (3 - 2 * t);
 }
 
+// React 19's hook purity/immutability rules flag this 60fps particle physics
+// loop: the init uses Math.random() and the useFrame body mutates Float32Arrays
+// that were created inside useMemo. Both are intentional — allocating new
+// typed arrays every frame would trash the GC. The module-level disable keeps
+// the file lint-clean without changing runtime behaviour.
+/* eslint-disable react-hooks/purity, react-hooks/immutability */
+
 export default function GalaxyParticles() {
   const pointsRef = useRef<THREE.Points>(null);
   const mouse = useMousePosition();

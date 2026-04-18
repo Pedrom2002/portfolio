@@ -11,9 +11,9 @@ import { useEffect } from "react";
 vi.mock("@gsap/react", () => ({
   useGSAP: (cb: () => void) => {
     // Real useGSAP runs after the ref is attached; emulate with useEffect.
-    useEffect(() => {
-      cb();
-    }, []);
+    // The mount-only behaviour is intentional — deps list must stay empty.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => { cb(); }, []);
   },
 }));
 

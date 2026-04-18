@@ -25,7 +25,7 @@ if (typeof window !== "undefined" && !window.matchMedia) {
 
 // jsdom doesn't implement IntersectionObserver — used by Framer Motion's whileInView.
 if (typeof window !== "undefined" && !("IntersectionObserver" in window)) {
-  // @ts-expect-error - simple stub
+  // @ts-expect-error -- minimal stub covers only what our tests need
   window.IntersectionObserver = class {
     observe() {}
     unobserve() {}
@@ -38,7 +38,7 @@ if (typeof window !== "undefined" && !("IntersectionObserver" in window)) {
 
 // jsdom doesn't implement ResizeObserver.
 if (typeof window !== "undefined" && !("ResizeObserver" in window)) {
-  // @ts-expect-error - simple stub
+  // @ts-expect-error -- minimal stub covers only what our tests need
   window.ResizeObserver = class {
     observe() {}
     unobserve() {}
@@ -48,7 +48,7 @@ if (typeof window !== "undefined" && !("ResizeObserver" in window)) {
 
 // PointerEvent stub for user-event in jsdom.
 if (typeof window !== "undefined" && !("PointerEvent" in window)) {
-  // @ts-expect-error
+  // @ts-expect-error -- minimal stub covers only what our tests need
   window.PointerEvent = class extends Event {
     constructor(type: string, init?: EventInit) {
       super(type, init);
