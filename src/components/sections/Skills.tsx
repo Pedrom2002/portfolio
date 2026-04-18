@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Code2, Database, Wrench } from "lucide-react";
 import { skillCategories } from "@/lib/constants";
 import GradientText from "@/components/ui/GradientText";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import SectionDivider from "@/components/ui/SectionDivider";
-import { getQualityConfig } from "@/lib/quality";
+import { useQuality } from "@/hooks/useQuality";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   "Frontend": <Code2 size={20} />,
@@ -52,7 +51,7 @@ const badgeVariants: Variants = {
 };
 
 export default function Skills() {
-  const q = useMemo(() => getQualityConfig(), []);
+  const q = useQuality();
   const isLow = q.tier === "low";
   const variants = isLow ? containerVariantsReduced : q.tier === "medium" ? containerVariantsReduced : containerVariants;
 

@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap-config";
 import { useIsTouchDevice } from "@/hooks/useMediaQuery";
-import { getQualityConfig } from "@/lib/quality";
+import { useQuality } from "@/hooks/useQuality";
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const cursorDotRef = useRef<HTMLDivElement>(null);
   const isTouch = useIsTouchDevice();
-  const q = useMemo(() => getQualityConfig(), []);
+  const q = useQuality();
 
   useEffect(() => {
     if (isTouch || q.customCursor === "off" || !cursorDotRef.current) return;

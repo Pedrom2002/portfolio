@@ -73,7 +73,7 @@ export default function Navigation() {
                 <button
                   onClick={() => scrollTo(link.href)}
                   aria-label={`Navigate to ${link.label} section`}
-                  aria-current={isActive ? "true" : undefined}
+                  aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "relative rounded-xl px-4 py-2 text-sm font-medium transition-all duration-300",
                     isActive
@@ -100,6 +100,8 @@ export default function Navigation() {
           onClick={() => setMobileOpen(!mobileOpen)}
           className="flex h-10 w-10 items-center justify-center rounded-xl text-white transition-colors hover:bg-white/10 md:hidden"
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-nav-menu"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -112,6 +114,7 @@ export default function Navigation() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.2 }}
+              id="mobile-nav-menu"
               className="glass absolute top-full left-1/2 mt-3 -translate-x-1/2 rounded-2xl p-3"
             >
               <ul className="flex min-w-[180px] flex-col gap-0.5">

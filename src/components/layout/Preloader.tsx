@@ -37,8 +37,9 @@ export default function Preloader() {
     const sceneReady = new Promise<void>((resolve) => {
       const handler = () => { resolve(); window.removeEventListener("scene-ready", handler); };
       window.addEventListener("scene-ready", handler);
-      // Fallback if scene-ready never fires
-      setTimeout(resolve, 5000);
+      // Fallback if scene-ready never fires (e.g. WebGL crash without
+      // CanvasErrorBoundary catch): keep tight so users aren't held hostage.
+      setTimeout(resolve, 3000);
     });
 
     const minWait = new Promise<void>((resolve) => setTimeout(resolve, minTime));

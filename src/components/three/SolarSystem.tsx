@@ -6,7 +6,7 @@ import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { projects } from "@/lib/constants";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
-import { getQualityConfig } from "@/lib/quality";
+import { useQuality } from "@/hooks/useQuality";
 
 const CX = 30, CY = 0, CZ = 0;
 const SUN_POS = new THREE.Vector3(CX, CY, CZ);
@@ -15,37 +15,6 @@ const SUN_POS = new THREE.Vector3(CX, CY, CZ);
 export const planetPositions: THREE.Vector3[] = [
   new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(),
 ];
-
-// ===================== ATMOSPHERE SHADER =====================
-const atmosVert = /* glsl */ `
-varying vec3 vWorldNormal;
-varying vec3 vWorldPos;
-void main() {
-  vWorldNormal = normalize(mat3(modelMatrix) * normal);
-  vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}`;
-
-const atmosFrag = /* glsl */ `
-uniform vec3 uColor;
-uniform vec3 uTwilightColor;
-uniform vec3 uSunPos;
-uniform vec3 uCameraPos;
-varying vec3 vWorldNormal;
-varying vec3 vWorldPos;
-void main() {
-  vec3 viewDir = normalize(vWorldPos - uCameraPos);
-  vec3 normal = normalize(vWorldNormal);
-  vec3 sunDir = normalize(uSunPos - vWorldPos);
-  float fresnel = 1.0 - abs(dot(viewDir, normal));
-  float sunFacing = dot(normal, sunDir);
-  vec3 color = mix(uTwilightColor, uColor, smoothstep(-0.3, 0.6, sunFacing));
-  float glow = pow(fresnel, 2.5);
-  float sunMask = smoothstep(-0.4, 0.3, sunFacing);
-  float nightRim = pow(fresnel, 5.0) * 0.15;
-  float alpha = glow * 0.6 * sunMask + nightRim;
-  gl_FragColor = vec4(color, alpha);
-}`;
 
 // ===================== EARTH SHADER =====================
 const earthVert = /* glsl */ `
@@ -127,10 +96,10 @@ interface PlanetConfig {
 }
 
 const PLANET_CONFIGS: PlanetConfig[] = [
-  { orbitRadius: 6, orbitSpeed: 0.10, size: 1.2, texture: "/textures/2k_earth_daymap.jpg", atmosphere: "#4db2ff", twilight: "#ff6633", tilt: 0.41, hasRing: false, isEarth: true },
-  { orbitRadius: 10, orbitSpeed: 0.06, size: 1.0, texture: "/textures/2k_mars.jpg", atmosphere: "#ff8844", twilight: "#cc4400", tilt: 0.44, hasRing: false, isEarth: false },
-  { orbitRadius: 15, orbitSpeed: 0.035, size: 1.8, texture: "/textures/2k_jupiter.jpg", atmosphere: "#ddbb77", twilight: "#aa7744", tilt: 0.05, hasRing: false, isEarth: false },
-  { orbitRadius: 20, orbitSpeed: 0.02, size: 1.4, texture: "/textures/2k_saturn.jpg", atmosphere: "#eedd88", twilight: "#aa8833", tilt: 0.47, hasRing: true, isEarth: false },
+  { orbitRadius: 6, orbitSpeed: 0.10, size: 1.2, texture: "/textures/2k_earth_daymap.webp", atmosphere: "#4db2ff", twilight: "#ff6633", tilt: 0.41, hasRing: false, isEarth: true },
+  { orbitRadius: 10, orbitSpeed: 0.06, size: 1.0, texture: "/textures/2k_mars.webp", atmosphere: "#ff8844", twilight: "#cc4400", tilt: 0.44, hasRing: false, isEarth: false },
+  { orbitRadius: 15, orbitSpeed: 0.035, size: 1.8, texture: "/textures/2k_jupiter.webp", atmosphere: "#ddbb77", twilight: "#aa7744", tilt: 0.05, hasRing: false, isEarth: false },
+  { orbitRadius: 20, orbitSpeed: 0.02, size: 1.4, texture: "/textures/2k_saturn.webp", atmosphere: "#eedd88", twilight: "#aa8833", tilt: 0.47, hasRing: true, isEarth: false },
 ];
 
 // ===================== SUN CORONA SHADER =====================
@@ -168,9 +137,11 @@ void main() {
 function Sun() {
   const meshRef = useRef<THREE.Mesh>(null);
   const coronaRef = useRef<THREE.ShaderMaterial>(null);
-  const sunTexture = useTexture("/textures/2k_sun.jpg");
+  const sunTexture = useTexture("/textures/2k_sun.webp");
   const { camera } = useThree();
-  const q = useMemo(() => getQualityConfig(), []);
+  const q = useQuality();
+
+  useEffect(() => () => { sunTexture.dispose(); }, [sunTexture]);
 
   useFrame(({ clock }) => {
     if (meshRef.current) meshRef.current.rotation.y = clock.elapsedTime * 0.02;
@@ -228,7 +199,7 @@ function Sun() {
 
 // ===================== ORBIT RING =====================
 function OrbitRing({ radius }: { radius: number }) {
-  const q = useMemo(() => getQualityConfig(), []);
+  const q = useQuality();
   const line = useMemo(() => {
     const pts: THREE.Vector3[] = [];
     const segments = q.orbitRingPoints;
@@ -254,8 +225,10 @@ function OrbitRing({ radius }: { radius: number }) {
 function EarthClouds({ size, tilt }: { size: number; tilt: number }) {
   const cloudRef = useRef<THREE.Mesh>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
-  const cloudTexture = useTexture("/textures/2k_earth_clouds.jpg");
-  const q = useMemo(() => getQualityConfig(), []);
+  const cloudTexture = useTexture("/textures/2k_earth_clouds.webp");
+  const q = useQuality();
+
+  useEffect(() => () => { cloudTexture.dispose(); }, [cloudTexture]);
 
   useFrame(({ clock }) => {
     if (cloudRef.current) cloudRef.current.rotation.y = clock.elapsedTime * 0.01;
@@ -281,8 +254,10 @@ function EarthClouds({ size, tilt }: { size: number; tilt: number }) {
 
 // ===================== SATURN RING =====================
 function SaturnRing({ size }: { size: number }) {
-  const ringTexture = useTexture("/textures/2k_saturn_ring_alpha.png");
-  const q = useMemo(() => getQualityConfig(), []);
+  const ringTexture = useTexture("/textures/2k_saturn_ring_alpha.webp");
+  const q = useQuality();
+
+  useEffect(() => () => { ringTexture.dispose(); }, [ringTexture]);
 
   return (
     <mesh rotation={[Math.PI * 0.45, 0, 0]}>
@@ -301,55 +276,19 @@ function SaturnRing({ size }: { size: number }) {
   );
 }
 
-// ===================== ATMOSPHERE =====================
-function Atmosphere({ size, tilt, color, twilight }: {
-  size: number; tilt: number; color: string; twilight: string;
-}) {
-  const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { camera } = useThree();
-  const q = useMemo(() => getQualityConfig(), []);
-
-  useFrame(() => {
-    if (matRef.current) matRef.current.uniforms.uCameraPos.value.copy(camera.position);
-  });
-
-  return (
-    <mesh rotation={[tilt, 0, 0]}>
-      <sphereGeometry args={[size * 1.18, q.atmosphereSegments, q.atmosphereSegments]} />
-      <shaderMaterial
-        ref={matRef}
-        vertexShader={atmosVert}
-        fragmentShader={atmosFrag}
-        uniforms={{
-          uColor: { value: new THREE.Color(color) },
-          uTwilightColor: { value: new THREE.Color(twilight) },
-          uSunPos: { value: SUN_POS },
-          uCameraPos: { value: new THREE.Vector3() },
-        }}
-        transparent
-        side={THREE.BackSide}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-      />
-    </mesh>
-  );
-}
-
-// ===================== PLANET =====================
-function Planet({ project, config, index }: {
-  project: (typeof projects)[0];
-  config: PlanetConfig;
-  index: number;
-}) {
+// ===================== EARTH PLANET =====================
+function EarthPlanet({ config, index }: { config: PlanetConfig; index: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const planetRef = useRef<THREE.Mesh>(null);
   const earthMatRef = useRef<THREE.ShaderMaterial>(null);
   const { camera } = useThree();
-  const q = useMemo(() => getQualityConfig(), []);
+  const q = useQuality();
 
-  // Load textures
-  const mainTexture = useTexture(config.texture);
-  const nightTexture = config.isEarth ? useTexture("/textures/2k_earth_nightmap.jpg") : null;
+  const dayMap = useTexture(config.texture);
+  const nightMap = useTexture("/textures/2k_earth_nightmap.webp");
+
+  useEffect(() => () => { dayMap.dispose(); }, [dayMap]);
+  useEffect(() => () => { nightMap.dispose(); }, [nightMap]);
 
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
@@ -357,46 +296,57 @@ function Planet({ project, config, index }: {
     groupRef.current.position.x = CX + Math.cos(angle) * config.orbitRadius;
     groupRef.current.position.y = CY + Math.sin(angle * 0.4) * 0.3;
     groupRef.current.position.z = CZ + Math.sin(angle) * config.orbitRadius;
-
-    // Share position with ScrollCamera
-    if (index < planetPositions.length) {
-      planetPositions[index].copy(groupRef.current.position);
-    }
-
+    if (index < planetPositions.length) planetPositions[index].copy(groupRef.current.position);
     if (planetRef.current) planetRef.current.rotation.y += 0.003;
     if (earthMatRef.current) earthMatRef.current.uniforms.uCameraPos.value.copy(camera.position);
   });
 
   return (
     <group ref={groupRef}>
-      {/* Planet surface */}
       <mesh ref={planetRef} rotation={[config.tilt, 0, 0]}>
         <sphereGeometry args={[config.size, q.sphereSegments, q.sphereSegments]} />
-        {config.isEarth ? (
-          <shaderMaterial
-            ref={earthMatRef}
-            vertexShader={earthVert}
-            fragmentShader={earthFrag}
-            uniforms={{
-              uDayMap: { value: mainTexture },
-              uNightMap: { value: nightTexture },
-              uSunPos: { value: SUN_POS },
-              uCameraPos: { value: new THREE.Vector3() },
-            }}
-          />
-        ) : (
-          <meshStandardMaterial
-            map={mainTexture}
-            roughness={0.85}
-            metalness={0.0}
-          />
-        )}
+        <shaderMaterial
+          ref={earthMatRef}
+          vertexShader={earthVert}
+          fragmentShader={earthFrag}
+          uniforms={{
+            uDayMap: { value: dayMap },
+            uNightMap: { value: nightMap },
+            uSunPos: { value: SUN_POS },
+            uCameraPos: { value: new THREE.Vector3() },
+          }}
+        />
       </mesh>
+      {q.showClouds && <EarthClouds size={config.size} tilt={config.tilt} />}
+    </group>
+  );
+}
 
-      {/* Earth clouds — only on HIGH/MEDIUM */}
-      {config.isEarth && q.showClouds && <EarthClouds size={config.size} tilt={config.tilt} />}
+// ===================== ROCKY PLANET =====================
+function RockyPlanet({ config, index }: { config: PlanetConfig; index: number }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const planetRef = useRef<THREE.Mesh>(null);
+  const q = useQuality();
+  const mainTexture = useTexture(config.texture);
 
-      {/* Saturn ring */}
+  useEffect(() => () => { mainTexture.dispose(); }, [mainTexture]);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const angle = clock.elapsedTime * config.orbitSpeed + index * (Math.PI * 2) / projects.length;
+    groupRef.current.position.x = CX + Math.cos(angle) * config.orbitRadius;
+    groupRef.current.position.y = CY + Math.sin(angle * 0.4) * 0.3;
+    groupRef.current.position.z = CZ + Math.sin(angle) * config.orbitRadius;
+    if (index < planetPositions.length) planetPositions[index].copy(groupRef.current.position);
+    if (planetRef.current) planetRef.current.rotation.y += 0.003;
+  });
+
+  return (
+    <group ref={groupRef}>
+      <mesh ref={planetRef} rotation={[config.tilt, 0, 0]}>
+        <sphereGeometry args={[config.size, q.sphereSegments, q.sphereSegments]} />
+        <meshStandardMaterial map={mainTexture} roughness={0.85} metalness={0.0} />
+      </mesh>
       {config.hasRing && <SaturnRing size={config.size} />}
     </group>
   );
@@ -423,9 +373,12 @@ export default function SolarSystem() {
       <ambientLight intensity={0.03} />
       <Sun />
       {PLANET_CONFIGS.map((c, i) => <OrbitRing key={`o-${i}`} radius={c.orbitRadius} />)}
-      {projects.map((p, i) => (
-        <Planet key={p.id} project={p} config={PLANET_CONFIGS[i] || PLANET_CONFIGS[0]} index={i} />
-      ))}
+      {projects.map((p, i) => {
+        const config = PLANET_CONFIGS[i] || PLANET_CONFIGS[0];
+        return config.isEarth
+          ? <EarthPlanet key={p.id} config={config} index={i} />
+          : <RockyPlanet key={p.id} config={config} index={i} />;
+      })}
     </group>
   );
 }

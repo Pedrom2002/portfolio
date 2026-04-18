@@ -59,11 +59,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" aria-label="Contact" className="flex h-screen items-center overflow-hidden -mt-32">
-          <div className="w-full">
-            <Contact />
-            <Footer />
-          </div>
+        <section id="contact" aria-label="Contact">
+          <Contact />
+          <Footer />
         </section>
       </main>
 

@@ -47,7 +47,7 @@ export function ProjectDetail({ index }: { index: number }) {
         <ScrollReveal delay={0.05}>
           <div className="mt-6 flex flex-col items-center gap-4">
             {project.image && (
-              <div className={`overflow-hidden rounded-2xl border p-3 ${
+              <div className={`relative h-[96px] w-[96px] overflow-hidden rounded-2xl border p-3 ${
                 project.id === "clutchlabs"
                   ? "border-white/10 bg-white/90 shadow-lg shadow-primary/10"
                   : "border-glass-border bg-galaxy-dark/50"
@@ -55,9 +55,9 @@ export function ProjectDetail({ index }: { index: number }) {
                 <Image
                   src={project.image}
                   alt={`${project.title} logo`}
-                  width={96}
-                  height={96}
-                  className="rounded-xl"
+                  fill
+                  sizes="96px"
+                  className="rounded-xl object-contain p-3"
                 />
               </div>
             )}

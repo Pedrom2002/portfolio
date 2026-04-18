@@ -1,17 +1,17 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { Stars } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useMousePosition } from "@/hooks/useMousePosition";
-import { getQualityConfig } from "@/lib/quality";
+import { useQuality } from "@/hooks/useQuality";
 
 export default function StarField() {
   const groupRef = useRef<THREE.Group>(null);
   const mouse = useMousePosition();
   const smooth = useRef({ x: 0, y: 0 });
-  const q = useMemo(() => getQualityConfig(), []);
+  const q = useQuality();
 
   useFrame(() => {
     if (!groupRef.current) return;

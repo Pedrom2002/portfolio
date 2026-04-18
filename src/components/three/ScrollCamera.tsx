@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { planetPositions } from "./SolarSystem";
@@ -26,25 +26,76 @@ function getPlanetViewOffset(planetPos: THREE.Vector3): THREE.Vector3 {
   );
 }
 
-const S = 1 / 8;
-const KEYFRAMES = [
-  { t: 0,       pos: [0, 4, 18], look: [0, 0, 0], planet: -1 },
-  { t: S * 0.8, pos: [0, 1.5, 7], look: [0, 0, 0], planet: -1 },
-  { t: S * 1.3, pos: [0, 0.2, -2], look: [5, 0, -10], planet: -1 },
-  { t: S * 2,   pos: [SC.x, 28, SC.z + 10], look: [SC.x, 0, SC.z], planet: -1 },
-  { t: S * 3,   pos: [0, 0, 0], look: [0, 0, 0], planet: 0 },
-  { t: S * 4,   pos: [0, 0, 0], look: [0, 0, 0], planet: 1 },
-  { t: S * 5,   pos: [0, 0, 0], look: [0, 0, 0], planet: 2 },
-  { t: S * 6,   pos: [0, 0, 0], look: [0, 0, 0], planet: 3 },
-  { t: S * 7,   pos: [SC.x - 8, 14, SC.z + 25], look: [SC.x, 0, SC.z], planet: -1 },
-  { t: 1.00,    pos: [5, 12, 40], look: [15, 0, -5], planet: -1 },
-];
+interface Keyframe {
+  t: number;
+  pos: [number, number, number];
+  look: [number, number, number];
+  planet: number;
+}
+
+// Default keyframe shape — `t` for planet keyframes is overwritten at runtime
+// from the actual section positions so the camera stays in sync with the cards
+// regardless of total page height.
+function buildDefaultKeyframes(): Keyframe[] {
+  const S = 1 / 8;
+  return [
+    { t: 0,       pos: [0, 4, 18], look: [0, 0, 0], planet: -1 },
+    { t: S * 0.8, pos: [0, 1.5, 7], look: [0, 0, 0], planet: -1 },
+    { t: S * 1.3, pos: [0, 0.2, -2], look: [5, 0, -10], planet: -1 },
+    { t: S * 2,   pos: [SC.x, 28, SC.z + 10], look: [SC.x, 0, SC.z], planet: -1 },
+    { t: S * 3,   pos: [0, 0, 0], look: [0, 0, 0], planet: 0 },
+    { t: S * 4,   pos: [0, 0, 0], look: [0, 0, 0], planet: 1 },
+    { t: S * 5,   pos: [0, 0, 0], look: [0, 0, 0], planet: 2 },
+    { t: S * 6,   pos: [0, 0, 0], look: [0, 0, 0], planet: 3 },
+    { t: S * 7,   pos: [SC.x - 8, 14, SC.z + 25], look: [SC.x, 0, SC.z], planet: -1 },
+    { t: 1.00,    pos: [5, 12, 40], look: [15, 0, -5], planet: -1 },
+  ];
+}
+
+// Compute keyframe `t` values from real DOM section positions so the planet
+// transitions are anchored to the project cards, not arbitrary page fractions.
+function computeKeyframes(): Keyframe[] {
+  const kf = buildDefaultKeyframes();
+  if (typeof window === "undefined") return kf;
+
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  if (max <= 0) return kf;
+
+  for (let i = 0; i < kf.length; i++) {
+    const k = kf[i];
+    if (k.planet < 0) continue;
+    const el = document.getElementById(`project-${k.planet}`);
+    if (!el) continue;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    k.t = Math.max(0, Math.min(1, top / max));
+  }
+
+  // Pin the post-planet keyframe to start right after the last planet ends.
+  const lastPlanetIdx = kf.findIndex((k) => k.planet === 3);
+  if (lastPlanetIdx >= 0 && lastPlanetIdx + 1 < kf.length) {
+    const lastEl = document.getElementById("project-3");
+    if (lastEl) {
+      const bottom =
+        lastEl.getBoundingClientRect().bottom + window.scrollY;
+      kf[lastPlanetIdx + 1].t = Math.max(
+        kf[lastPlanetIdx].t + 0.01,
+        Math.min(1, bottom / max),
+      );
+    }
+  }
+
+  // Ensure monotonic order.
+  for (let i = 1; i < kf.length; i++) {
+    if (kf[i].t < kf[i - 1].t) kf[i].t = kf[i - 1].t + 0.001;
+  }
+  return kf;
+}
 
 // Reusable vectors to avoid GC pressure per frame
 const _targetPos = new THREE.Vector3();
 const _targetLook = new THREE.Vector3();
 
-function getKeyframeTarget(kf: typeof KEYFRAMES[0]): { pos: THREE.Vector3; look: THREE.Vector3 } {
+function getKeyframeTarget(kf: Keyframe): { pos: THREE.Vector3; look: THREE.Vector3 } {
   if (kf.planet >= 0 && kf.planet < planetPositions.length) {
     const pp = planetPositions[kf.planet];
     if (pp.lengthSq() < 0.01) {
@@ -74,6 +125,20 @@ export default function ScrollCamera() {
   const currentPos = useRef(new THREE.Vector3(0, 4, 18));
   const currentLook = useRef(new THREE.Vector3(0, 0, 0));
   const ready = useRef(false);
+  const keyframesRef = useRef<Keyframe[]>(buildDefaultKeyframes());
+
+  useEffect(() => {
+    const refresh = () => {
+      keyframesRef.current = computeKeyframes();
+    };
+    // Initial compute after layout settles.
+    const t = setTimeout(refresh, 100);
+    window.addEventListener("resize", refresh);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", refresh);
+    };
+  }, []);
 
   const getScrollProgress = useCallback(() => {
     if (typeof window === "undefined") return 0;
@@ -83,21 +148,22 @@ export default function ScrollCamera() {
 
   useFrame(() => {
     const progress = getScrollProgress();
+    const KF = keyframesRef.current;
 
     let fromIdx = 0;
-    for (let i = KEYFRAMES.length - 2; i >= 0; i--) {
-      if (progress >= KEYFRAMES[i].t) {
+    for (let i = KF.length - 2; i >= 0; i--) {
+      if (progress >= KF[i].t) {
         fromIdx = i;
         break;
       }
     }
-    const toIdx = Math.min(fromIdx + 1, KEYFRAMES.length - 1);
+    const toIdx = Math.min(fromIdx + 1, KF.length - 1);
 
-    const from = getKeyframeTarget(KEYFRAMES[fromIdx]);
-    const to = getKeyframeTarget(KEYFRAMES[toIdx]);
+    const from = getKeyframeTarget(KF[fromIdx]);
+    const to = getKeyframeTarget(KF[toIdx]);
 
-    const range = KEYFRAMES[toIdx].t - KEYFRAMES[fromIdx].t;
-    const local = range > 0 ? smootherstep((progress - KEYFRAMES[fromIdx].t) / range) : 0;
+    const range = KF[toIdx].t - KF[fromIdx].t;
+    const local = range > 0 ? smootherstep((progress - KF[fromIdx].t) / range) : 0;
 
     _targetPos.lerpVectors(from.pos, to.pos, local);
     _targetLook.lerpVectors(from.look, to.look, local);

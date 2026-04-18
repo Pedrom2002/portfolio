@@ -5,7 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
-import { getQualityConfig } from "@/lib/quality";
+import { useQuality } from "@/hooks/useQuality";
 
 const CONFIG = {
   radius: 9,
@@ -32,7 +32,7 @@ export default function GalaxyParticles() {
   const scrollProgress = useScrollProgress();
   const { viewport } = useThree();
   const frameCount = useRef(0);
-  const q = useMemo(() => getQualityConfig(), []);
+  const q = useQuality();
   const count = q.particleCount;
 
   const { positions, colors, originalPositions, velocities, magnetism, baseColors } = useMemo(() => {

@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import CanvasErrorBoundary from "@/components/three/CanvasErrorBoundary";
 
 const GalaxyCanvas = dynamic(
   () => import("@/components/three/GalaxyCanvas"),
@@ -11,5 +12,9 @@ const GalaxyCanvas = dynamic(
 );
 
 export default function GalaxyBackground() {
-  return <GalaxyCanvas />;
+  return (
+    <CanvasErrorBoundary>
+      <GalaxyCanvas />
+    </CanvasErrorBoundary>
+  );
 }

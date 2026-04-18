@@ -9,7 +9,7 @@ import GalaxyParticles from "./GalaxyParticles";
 import StarField from "./StarField";
 import SolarSystem from "./SolarSystem";
 import ScrollCamera from "./ScrollCamera";
-import { getQualityConfig } from "@/lib/quality";
+import { useQuality } from "@/hooks/useQuality";
 
 function SceneReadySignal() {
   const fired = useRef(false);
@@ -23,7 +23,7 @@ function SceneReadySignal() {
 }
 
 export default function GalaxyCanvas() {
-  const q = getQualityConfig();
+  const q = useQuality();
 
   return (
     <div
