@@ -26,10 +26,43 @@ Personal portfolio featuring a 3D galaxy theme with an interactive solar system 
 
 ```bash
 npm install
+cp .env.example .env.local   # then fill RESEND_API_KEY + CONTACT_TO_EMAIL
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+## Scripts
+
+```bash
+npm run dev           # next dev (Turbopack)
+npm run build         # production build
+npm run start         # serve production build
+npm run lint          # eslint
+npm run type-check    # tsc --noEmit
+npm test              # vitest one-shot
+npm run test:watch    # vitest watch mode
+npm run test:coverage # vitest + v8 coverage report
+```
+
+## Testing
+
+Vitest + @testing-library/react with jsdom. **125 tests across libs, hooks,
+the contact API route, and every UI / layout / section component.** Coverage
+sits around **83% statements / 78% branches**, with `lib/`, `hooks/`,
+`api/contact`, and most components at or near 100%. See
+[tests/README.md](tests/README.md) for the testing strategy and what is
+intentionally covered by Playwright instead (3D / WebGL).
+
+## Environment
+
+The contact form (`src/app/api/contact/route.ts`) needs:
+
+- `RESEND_API_KEY` — sign up at [resend.com](https://resend.com) (free tier: 100 emails/day)
+- `CONTACT_TO_EMAIL` — where submissions are delivered
+- `CONTACT_FROM_EMAIL` — optional verified sender (defaults to Resend's onboarding sender)
+
+Without these set, the API endpoint returns 502 and the form gracefully falls back to the visible mailto link.
 
 ## Project Structure
 
