@@ -2,15 +2,13 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// 'unsafe-eval' is required by the 3D stack in production too:
-// - three.js compiles shader helpers via `new Function(...)` at runtime
-// - @react-three/fiber / drei / postprocessing rely on the same
-// - gsap uses Function() for property accessors
-// Dev additionally needs it for React Refresh / error overlay, and ws: in
-// connect-src for HMR.
+// Dev needs 'unsafe-eval' for React Refresh / error overlay and ws: in
+// connect-src for HMR. Production is strict — we keep Zod server-side only
+// and the 3D stack (three/@react-three/gsap/framer-motion/lenis) does not
+// actually execute eval() or new Function() at runtime.
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",

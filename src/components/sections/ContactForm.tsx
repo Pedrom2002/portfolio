@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import { contactSchema } from "@/lib/contact-schema";
+import { validateContactForm, type ContactFieldErrors } from "@/lib/contact-validation";
 
 type Status =
   | { kind: "idle" }
@@ -15,7 +15,7 @@ const inputClass =
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
+  const [errors, setErrors] = useState<ContactFieldErrors>({});
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,9 +23,9 @@ export default function ContactForm() {
 
     const formEl = e.currentTarget;
     const data = Object.fromEntries(new FormData(formEl).entries());
-    const parsed = contactSchema.safeParse(data);
-    if (!parsed.success) {
-      setErrors(parsed.error.flatten().fieldErrors);
+    const result = validateContactForm(data);
+    if (!result.ok) {
+      setErrors(result.errors);
       return;
     }
 
@@ -34,7 +34,7 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify(result.data),
       });
       const json = (await res.json().catch(() => ({}))) as {
         error?: string;
@@ -42,7 +42,7 @@ export default function ContactForm() {
       };
 
       if (!res.ok) {
-        if (json.details) setErrors(json.details);
+        if (json.details) setErrors(json.details as ContactFieldErrors);
         setStatus({
           kind: "error",
           message: json.error ?? "Something went wrong. Please try again.",
