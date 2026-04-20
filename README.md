@@ -2,7 +2,7 @@
 
 Personal portfolio featuring a 3D galaxy theme with an interactive solar system project showcase.
 
-**Live:** [pedromarques.dev](https://pedromarques.dev)
+**Live:** [portfolio-pedromarques-dev.vercel.app](https://portfolio-pedromarques-dev.vercel.app/)
 
 ## Tech Stack
 
