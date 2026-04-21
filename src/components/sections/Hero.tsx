@@ -18,15 +18,16 @@ export default function Hero() {
     const SAFETY_SELECTORS =
       ".hero-badge, .hero-name-line, .hero-title, .hero-subtitle, .hero-cta-btn, .hero-scroll, .hero-decoration";
 
+    // Transform-only animations (no opacity). Hero text stays at full
+    // opacity from SSR through hydration, so there's no flash-then-hide
+    // window even on slow machines or if GSAP loads late.
     tl.from(".hero-badge", {
       scale: 0.5,
-      opacity: 0,
       duration: 0.6,
       ease: "back.out(1.7)",
     })
       .from(".hero-name-line", {
         y: 120,
-        opacity: 0,
         skewY: 7,
         duration: 1,
         ease: "power4.out",
@@ -34,31 +35,26 @@ export default function Hero() {
       }, "-=0.3")
       .from(".hero-title", {
         y: 40,
-        opacity: 0,
         duration: 0.8,
         ease: "power3.out",
       }, "-=0.5")
       .from(".hero-subtitle", {
         y: 30,
-        opacity: 0,
         duration: 0.7,
         ease: "power3.out",
       }, "-=0.4")
       .from(".hero-cta-btn", {
         y: 20,
-        opacity: 0,
         scale: 0.9,
         duration: 0.5,
         ease: "back.out(1.7)",
         stagger: 0.1,
       }, "-=0.3")
       .from(".hero-scroll", {
-        opacity: 0,
         y: -10,
         duration: 0.6,
       }, "-=0.2")
       .from(".hero-decoration", {
-        opacity: 0,
         scale: 0,
         duration: 0.8,
         ease: "power3.out",
