@@ -15,6 +15,8 @@ export default function Hero() {
 
   useGSAP(() => {
     const tl = gsap.timeline({ delay: 0.3 });
+    const SAFETY_SELECTORS =
+      ".hero-badge, .hero-name-line, .hero-title, .hero-subtitle, .hero-cta-btn, .hero-scroll, .hero-decoration";
 
     tl.from(".hero-badge", {
       scale: 0.5,
@@ -62,6 +64,19 @@ export default function Hero() {
         ease: "power3.out",
         stagger: 0.1,
       }, "-=0.6");
+
+    // Safety net: if the timeline fails to complete (e.g. ticker stalls on
+    // a slow device, third-party script throws, tab backgrounded mid-anim),
+    // force every hero element back to a clean, visible state so the page
+    // never looks empty.
+    const safetyId = window.setTimeout(() => {
+      if (!tl.isActive() && tl.progress() >= 0.99) return;
+      gsap.set(SAFETY_SELECTORS, {
+        opacity: 1, y: 0, x: 0, scale: 1, skewY: 0, clearProps: "transform",
+      });
+    }, 6000);
+
+    return () => window.clearTimeout(safetyId);
   }, { scope: containerRef });
 
   const scrollToProjects = () => {
