@@ -4,7 +4,6 @@ import { ReactLenis, useLenis } from "lenis/react";
 import { type ReactNode, useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap-config";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import PerfWatchdog from "@/components/PerfWatchdog";
 
 // Bridges Lenis smooth-scroll into GSAP ScrollTrigger. Without this
 // ScrollTrigger reads native window.scrollY, which Lenis intercepts —
@@ -45,7 +44,6 @@ export default function Providers({ children }: { children: ReactNode }) {
       }}
     >
       <LenisGsapBridge />
-      <PerfWatchdog />
       {children}
     </ReactLenis>
   );

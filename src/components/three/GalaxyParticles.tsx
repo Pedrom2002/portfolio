@@ -38,7 +38,6 @@ export default function GalaxyParticles() {
   const smoothMouse = useRef({ x: 0, y: 0 });
   const scrollProgress = useScrollProgress();
   const { viewport } = useThree();
-  const frameCount = useRef(0);
   const q = useQuality();
   const count = q.particleCount;
 
@@ -141,9 +140,6 @@ export default function GalaxyParticles() {
       pointsRef.current.scale.setScalar(1);
     }
 
-    // LOW tier: skip physics entirely (static galaxy with rotation only)
-    if (q.mouseInteraction === "off") return;
-
     // Mouse interaction: active during hero (first 20%) and contact (final section)
     const heroInteraction = Math.max(0, 1 - sp / 0.20);
     const contactInteraction = fadeIn;
@@ -163,12 +159,7 @@ export default function GalaxyParticles() {
     const damping = 0.94;
     const returnStrength = 0.002;
 
-    // MEDIUM tier: process every 3rd particle for mouse interaction, update colors every 2nd frame
-    const step = q.mouseInteraction === "reduced" ? 3 : 1;
-    const skipColorUpdate = q.mouseInteraction === "reduced" && frameCount.current % 2 !== 0;
-    frameCount.current++;
-
-    for (let i = 0; i < count; i += step) {
+    for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       const dx = pos[i3] - mx;
       const dy = pos[i3 + 1] - my;
@@ -198,17 +189,15 @@ export default function GalaxyParticles() {
         velocities[i3 + 2] += (Math.random() - 0.5) * totalForce * 0.3;
 
         // Velocity-based brightness — disturbed particles glow
-        if (!skipColorUpdate) {
-          const speed = Math.sqrt(
-            velocities[i3] * velocities[i3] +
-            velocities[i3 + 1] * velocities[i3 + 1]
-          );
-          const glow = Math.min(speed * 12, 1.0);
-          col[i3] = baseColors[i3] + glow * 0.5;
-          col[i3 + 1] = baseColors[i3 + 1] + glow * 0.4;
-          col[i3 + 2] = baseColors[i3 + 2] + glow * 0.7;
-        }
-      } else if (!skipColorUpdate) {
+        const speed = Math.sqrt(
+          velocities[i3] * velocities[i3] +
+          velocities[i3 + 1] * velocities[i3 + 1]
+        );
+        const glow = Math.min(speed * 12, 1.0);
+        col[i3] = baseColors[i3] + glow * 0.5;
+        col[i3 + 1] = baseColors[i3 + 1] + glow * 0.4;
+        col[i3 + 2] = baseColors[i3 + 2] + glow * 0.7;
+      } else {
         // Fade color back to base
         col[i3] += (baseColors[i3] - col[i3]) * dt * 3;
         col[i3 + 1] += (baseColors[i3 + 1] - col[i3 + 1]) * dt * 3;
@@ -235,7 +224,7 @@ export default function GalaxyParticles() {
     }
 
     posAttr.needsUpdate = true;
-    if (!skipColorUpdate) colAttr.needsUpdate = true;
+    colAttr.needsUpdate = true;
   });
 
   return (

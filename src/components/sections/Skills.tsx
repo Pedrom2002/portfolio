@@ -6,7 +6,6 @@ import { skillCategories } from "@/lib/constants";
 import GradientText from "@/components/ui/GradientText";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import SectionDivider from "@/components/ui/SectionDivider";
-import { useQuality } from "@/hooks/useQuality";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   "Frontend": <Code2 size={20} />,
@@ -30,16 +29,6 @@ const containerVariants: Variants = {
   },
 };
 
-const containerVariantsReduced: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
 const badgeVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8, y: 15 },
   visible: {
@@ -51,9 +40,6 @@ const badgeVariants: Variants = {
 };
 
 export default function Skills() {
-  const q = useQuality();
-  const isLow = q.tier === "low";
-  const variants = isLow ? containerVariantsReduced : q.tier === "medium" ? containerVariantsReduced : containerVariants;
 
   return (
     <section className="section-padding relative">
@@ -93,33 +79,21 @@ export default function Skills() {
 
                   {/* Skills grid */}
                   <motion.div
-                    variants={variants}
+                    variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
                     className="flex flex-wrap gap-2"
                   >
                     {category.skills.map((skill) => (
-                      isLow ? (
-                        <span
-                          key={skill.name}
-                          className="badge cursor-default rounded-lg border border-glass-border bg-galaxy-darker/60 text-sm font-medium text-text-secondary transition-all duration-300 hover:border-primary/30 hover:text-white hover:shadow-[0_0_15px_rgba(129,84,255,0.15)] hover:-translate-y-0.5 hover:scale-105"
-                        >
-                          {skill.name}
-                        </span>
-                      ) : (
-                        <motion.span
-                          key={skill.name}
-                          variants={badgeVariants}
-                          whileHover={{
-                            scale: 1.05,
-                            y: -2,
-                          }}
-                          className="badge cursor-default rounded-lg border border-glass-border bg-galaxy-darker/60 text-sm font-medium text-text-secondary transition-all duration-300 hover:border-primary/30 hover:text-white hover:shadow-[0_0_15px_rgba(129,84,255,0.15)]"
-                        >
-                          {skill.name}
-                        </motion.span>
-                      )
+                      <motion.span
+                        key={skill.name}
+                        variants={badgeVariants}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        className="badge cursor-default rounded-lg border border-glass-border bg-galaxy-darker/60 text-sm font-medium text-text-secondary transition-all duration-300 hover:border-primary/30 hover:text-white hover:shadow-[0_0_15px_rgba(129,84,255,0.15)]"
+                      >
+                        {skill.name}
+                      </motion.span>
                     ))}
                   </motion.div>
 

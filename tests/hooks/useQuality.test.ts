@@ -31,7 +31,6 @@ describe("useQuality", () => {
     const c = result.current;
     expect(c).toEqual(
       expect.objectContaining({
-        tier: expect.any(String),
         particleCount: expect.any(Number),
         sphereSegments: expect.any(Number),
         showClouds: expect.any(Boolean),

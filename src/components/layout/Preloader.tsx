@@ -1,39 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { personalInfo } from "@/lib/constants";
-import { downgrade } from "@/lib/quality";
 
 export default function Preloader() {
   const [isLoading, setIsLoading] = useState(true);
-  const frameCountRef = useRef(0);
-  const startTimeRef = useRef(0);
 
   useEffect(() => {
     const minTime = 2200;
-    const fpsSampleDuration = 3000;
-    let rafId: number;
     let dismissed = false;
 
-    // FPS sampling: count frames over 3 seconds
-    startTimeRef.current = performance.now();
-    const countFrames = () => {
-      frameCountRef.current++;
-      const elapsed = performance.now() - startTimeRef.current;
-      if (elapsed < fpsSampleDuration) {
-        rafId = requestAnimationFrame(countFrames);
-      } else {
-        // Check average FPS
-        const avgFps = (frameCountRef.current / elapsed) * 1000;
-        if (avgFps < 24) {
-          downgrade();
-        }
-      }
-    };
-    rafId = requestAnimationFrame(countFrames);
-
-    // Wait for fonts + scene + minimum time
     const sceneReady = new Promise<void>((resolve) => {
       const handler = () => { resolve(); window.removeEventListener("scene-ready", handler); };
       window.addEventListener("scene-ready", handler);
@@ -57,7 +34,6 @@ export default function Preloader() {
 
     return () => {
       dismissed = true;
-      cancelAnimationFrame(rafId);
     };
   }, []);
 

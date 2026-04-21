@@ -2,12 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import Preloader from "@/components/layout/Preloader";
 
-vi.mock("@/lib/quality", async () => {
-  return {
-    downgrade: vi.fn(),
-  };
-});
-
 beforeEach(() => {
   vi.useFakeTimers();
   // Make document.fonts.ready resolve immediately

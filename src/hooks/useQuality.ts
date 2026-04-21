@@ -1,14 +1,10 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { getQualityConfig, subscribeQuality } from "@/lib/quality";
+import { getQualityConfig } from "@/lib/quality";
 
-const ssrConfig = getQualityConfig();
+// Single static config — same on SSR and client, no listeners, no re-renders.
+const CONFIG = getQualityConfig();
 
 export function useQuality() {
-  return useSyncExternalStore(
-    subscribeQuality,
-    getQualityConfig,
-    () => ssrConfig,
-  );
+  return CONFIG;
 }
