@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap-config";
 import { useIsTouchDevice } from "@/hooks/useMediaQuery";
 import { useQuality } from "@/hooks/useQuality";
@@ -10,6 +10,9 @@ export default function CustomCursor() {
   const cursorDotRef = useRef<HTMLDivElement>(null);
   const isTouch = useIsTouchDevice();
   const q = useQuality();
+  const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (isTouch || q.customCursor === "off" || !cursorDotRef.current) return;
@@ -56,9 +59,9 @@ export default function CustomCursor() {
         el.removeEventListener("mouseleave", handleMouseLeaveInteractive);
       });
     };
-  }, [isTouch, q.customCursor]);
+  }, [isTouch, q.customCursor, mounted]);
 
-  if (isTouch || q.customCursor === "off") return null;
+  if (!mounted || isTouch || q.customCursor === "off") return null;
 
   return (
     <>

@@ -4,6 +4,7 @@ import { ReactLenis } from "lenis/react";
 import { type ReactNode, useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap-config";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import PerfWatchdog from "@/components/PerfWatchdog";
 
 export default function Providers({ children }: { children: ReactNode }) {
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
@@ -21,6 +22,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         smoothWheel: !reducedMotion,
       }}
     >
+      <PerfWatchdog />
       {children}
     </ReactLenis>
   );

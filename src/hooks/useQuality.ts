@@ -1,8 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
-import { getQualityConfig } from "@/lib/quality";
+import { useSyncExternalStore } from "react";
+import { getQualityConfig, subscribeQuality } from "@/lib/quality";
+
+const ssrConfig = getQualityConfig();
 
 export function useQuality() {
-  return useMemo(() => getQualityConfig(), []);
+  return useSyncExternalStore(
+    subscribeQuality,
+    getQualityConfig,
+    () => ssrConfig,
+  );
 }

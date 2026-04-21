@@ -114,7 +114,12 @@ export default function GalaxyParticles() {
     const galaxyOpacity = Math.max(fadeOut, fadeIn * 0.7);
     const mat = pointsRef.current.material as THREE.PointsMaterial;
     mat.opacity = 0.9 * galaxyOpacity;
-    pointsRef.current.visible = galaxyOpacity > 0.01;
+    const visible = galaxyOpacity > 0.01;
+    pointsRef.current.visible = visible;
+
+    // Invisible → skip physics & color updates entirely. Saves a 28k-particle
+    // loop per frame while user is on the solar-system / project sections.
+    if (!visible) return;
 
     // Rotate galaxy slowly
     pointsRef.current.rotation.y += dt * 0.035;

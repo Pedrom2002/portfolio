@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Preload } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
@@ -24,6 +24,17 @@ function SceneReadySignal() {
 
 export default function GalaxyCanvas() {
   const q = useQuality();
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+
+  // Pause rendering while tab is hidden — Three keeps requesting frames
+  // otherwise, draining battery and CPU on background tabs.
+  useEffect(() => {
+    const onVis = () => {
+      setFrameloop(document.hidden ? "never" : "always");
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
 
   return (
     <div
@@ -44,6 +55,7 @@ export default function GalaxyCanvas() {
           powerPreference: "high-performance",
         }}
         dpr={q.dpr}
+        frameloop={frameloop}
         style={{ background: "transparent" }}
       >
         <Suspense fallback={null}>
