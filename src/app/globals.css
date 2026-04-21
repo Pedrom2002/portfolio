@@ -68,6 +68,23 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Hero name line reveal — CSS (not GSAP) so it always completes, even if
+   the GSAP ticker stalls or the component re-mounts mid-animation. Each
+   line slides up from translateY(120px) with a staggered delay. */
+.hero-name-line {
+  display: inline-block;
+  animation: hero-name-line-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-name-line:nth-child(1) { animation-delay: 0.3s; }
+.hero-name-line:nth-child(2) { animation-delay: 0.45s; }
+.hero-name-line:nth-child(3) { animation-delay: 0.6s; }
+.hero-name-line:nth-child(4) { animation-delay: 0.75s; }
+
+@keyframes hero-name-line-reveal {
+  from { transform: translateY(120px) skewY(7deg); }
+  to   { transform: translateY(0) skewY(0); }
+}
+
 /* Hero name — clean white with metallic shimmer */
 .hero-name {
   position: relative;

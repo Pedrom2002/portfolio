@@ -15,24 +15,23 @@ export default function Hero() {
 
   useGSAP(() => {
     const tl = gsap.timeline({ delay: 0.3 });
+    // .hero-name-line excluded — it's animated by CSS keyframes which
+    // always complete; clearing its transform here would race the keyframe.
     const SAFETY_SELECTORS =
-      ".hero-badge, .hero-name-line, .hero-title, .hero-subtitle, .hero-cta-btn, .hero-scroll, .hero-decoration";
+      ".hero-badge, .hero-title, .hero-subtitle, .hero-cta-btn, .hero-scroll, .hero-decoration";
 
     // Transform-only animations (no opacity). Hero text stays at full
     // opacity from SSR through hydration, so there's no flash-then-hide
     // window even on slow machines or if GSAP loads late.
+    // Hero name reveal is a CSS keyframe animation (see .hero-name-line in
+    // globals.css) — guarantees the line slides all the way back to y=0
+    // even if GSAP's ticker stalls mid-animation, which used to leave the
+    // text clipped behind the h1's overflow-hidden.
     tl.from(".hero-badge", {
       scale: 0.5,
       duration: 0.6,
       ease: "back.out(1.7)",
     })
-      .from(".hero-name-line", {
-        y: 120,
-        skewY: 7,
-        duration: 1,
-        ease: "power4.out",
-        stagger: 0.15,
-      }, "-=0.3")
       .from(".hero-title", {
         y: 40,
         duration: 0.8,
