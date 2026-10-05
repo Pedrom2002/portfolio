@@ -82,5 +82,5 @@ src/
 ## Contact
 
 - **Email:** pedrom02.dev@gmail.com
-- **LinkedIn:** [Pedro Marques](https://www.linkedin.com/in/pedro-marques-056baa366/)
+- **LinkedIn:** [Pedro Marques](https://www.linkedin.com/in/pedro-marques-dev02/)
 - **GitHub:** [Pedrom2002](https://github.com/Pedrom2002)

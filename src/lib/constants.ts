@@ -15,7 +15,7 @@ export const personalInfo: PersonalInfo = {
     },
     {
       name: "LinkedIn",
-      url: "https://www.linkedin.com/in/pedro-marques-056baa366/",
+      url: "https://www.linkedin.com/in/pedro-marques-dev02/",
       icon: "linkedin",
     },
     {
