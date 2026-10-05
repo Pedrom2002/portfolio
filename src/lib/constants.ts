@@ -90,7 +90,6 @@ export const otherProjects: Project[] = [
     technologies: ["Next.js", "Supabase", "Stripe", "QStash", "Gemini"],
     image: "",
     githubUrl: "https://github.com/Pedrom2002/quic-platform",
-    demoUrl: "https://quic-plat.vercel.app",
   },
   {
     id: "goalfest",
