@@ -36,14 +36,12 @@ describe("<Contact />", () => {
     expect(link).toHaveAttribute("href", `mailto:${personalInfo.email}`);
   });
 
-  it("renders both CV download links", () => {
+  it("renders a single CV download link", () => {
     render(<Contact />);
     expect(
-      screen.getByRole("link", { name: /software engineering/i }),
-    ).toHaveAttribute("href", "/Pedro_Marques_CV_Software_Developer.pdf");
-    expect(
-      screen.getByRole("link", { name: /data science/i }),
-    ).toHaveAttribute("href", "/Pedro_Marques_CV_Data_Scientist.pdf");
+      screen.getByRole("link", { name: /curriculum vitae/i }),
+    ).toHaveAttribute("href", "/Pedro_Marques_CV.pdf");
+    expect(document.querySelectorAll("a[download]")).toHaveLength(1);
   });
 
   it("renders all social links from constants", () => {

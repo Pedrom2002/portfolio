@@ -75,19 +75,11 @@ export default function Contact() {
                 </h3>
                 <div className="mt-2 flex flex-col gap-2">
                   <a
-                    href="/Pedro_Marques_CV_Software_Developer.pdf"
+                    href="/Pedro_Marques_CV.pdf"
                     download
                     className="group flex items-center justify-between gap-2 rounded-lg border border-glass-border bg-galaxy-darker/60 px-4 py-2.5 text-sm font-medium text-text-secondary transition-all duration-300 hover:border-primary/30 hover:text-white"
                   >
-                    <span>Software Engineering</span>
-                    <Download size={14} className="transition-colors group-hover:text-primary" />
-                  </a>
-                  <a
-                    href="/Pedro_Marques_CV_Data_Scientist.pdf"
-                    download
-                    className="group flex items-center justify-between gap-2 rounded-lg border border-glass-border bg-galaxy-darker/60 px-4 py-2.5 text-sm font-medium text-text-secondary transition-all duration-300 hover:border-primary/30 hover:text-white"
-                  >
-                    <span>Data Science</span>
+                    <span>Curriculum Vitae (PDF)</span>
                     <Download size={14} className="transition-colors group-hover:text-primary" />
                   </a>
                 </div>
