@@ -47,7 +47,7 @@ npm run test:coverage # vitest + v8 coverage report
 
 ## Testing
 
-Vitest + @testing-library/react with jsdom. **125 tests across libs, hooks,
+Vitest + @testing-library/react with jsdom. **130+ tests across libs, hooks,
 the contact API route, and every UI / layout / section component.** Coverage
 sits around **83% statements / 78% branches**, with `lib/`, `hooks/`,
 `api/contact`, and most components at or near 100%. See

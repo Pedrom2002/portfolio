@@ -5,6 +5,7 @@ import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import { ProjectsHeader, ProjectDetail } from "@/components/sections/Projects";
 import ProjectSnapZone from "@/components/sections/ProjectSnapZone";
+import OtherProjects from "@/components/sections/OtherProjects";
 import Skills from "@/components/sections/Skills";
 import Contact from "@/components/sections/Contact";
 import GalaxyBackground from "@/components/three/GalaxyBackground";
@@ -52,6 +53,12 @@ export default function Home() {
             <ProjectDetail index={3} />
           </section>
         </ProjectSnapZone>
+
+        <section id="more-projects" aria-label="More projects" className="flex min-h-screen items-center">
+          <div className="w-full rounded-3xl bg-galaxy-darker/70 py-4 backdrop-blur-sm">
+            <OtherProjects />
+          </div>
+        </section>
 
         <section id="skills" aria-label="Technical skills" className="flex h-screen items-center overflow-hidden">
           <div className="w-full rounded-3xl bg-galaxy-darker/70 py-4 backdrop-blur-sm">
