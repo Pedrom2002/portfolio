@@ -1,10 +1,15 @@
 "use client";
 
-import { getQualityConfig } from "@/lib/quality";
+import { useSyncExternalStore } from "react";
+import {
+  getQualityConfigForLevel,
+  getQualityLevel,
+  subscribeQuality,
+} from "@/lib/quality";
 
-// Single static config — same on SSR and client, no listeners, no re-renders.
-const CONFIG = getQualityConfig();
-
+// Config only changes when the FPS monitor steps the quality level down, so
+// it is stable across renders (and identical on SSR and first client render).
 export function useQuality() {
-  return CONFIG;
+  const level = useSyncExternalStore(subscribeQuality, getQualityLevel, () => 0);
+  return getQualityConfigForLevel(level);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useMousePosition } from "@/hooks/useMousePosition";
@@ -40,8 +40,10 @@ export default function GalaxyParticles() {
   const { viewport } = useThree();
   const q = useQuality();
   const count = q.particleCount;
+  // Only drawn/simulated subset; geometry itself is never rebuilt on a downgrade.
+  const active = Math.floor(count * q.particleFraction);
 
-  const { positions, colors, originalPositions, velocities, magnetism, baseColors } = useMemo(() => {
+  const { positions, colors, originalPositions, velocities, magnetism, baseColors, asleep } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const baseColors = new Float32Array(count * 3);
@@ -99,8 +101,16 @@ export default function GalaxyParticles() {
       colors[i3 + 2] = baseColors[i3 + 2];
     }
 
-    return { positions, colors, originalPositions, velocities, magnetism, baseColors };
+    // 1 = particle is at rest (no velocity, at origin, base colour) and far from
+    // the cursor, so the per-frame loop can skip it without changing the output.
+    const asleep = new Uint8Array(count);
+
+    return { positions, colors, originalPositions, velocities, magnetism, baseColors, asleep };
   }, [count]);
+
+  useEffect(() => {
+    pointsRef.current?.geometry.setDrawRange(0, active);
+  }, [active]);
 
   useFrame((_, delta) => {
     if (!pointsRef.current) return;
@@ -159,11 +169,19 @@ export default function GalaxyParticles() {
     const damping = 0.94;
     const returnStrength = 0.002;
 
-    for (let i = 0; i < count; i++) {
+    const maxRadiusSq = maxRadius * maxRadius;
+    let touched = false;
+
+    for (let i = 0; i < active; i++) {
       const i3 = i * 3;
       const dx = pos[i3] - mx;
       const dy = pos[i3 + 1] - my;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      const distSq = dx * dx + dy * dy;
+      // Resting particle outside the cursor radius: nothing would change.
+      if (asleep[i] === 1 && distSq >= maxRadiusSq) continue;
+      asleep[i] = 0;
+      touched = true;
+      const dist = Math.sqrt(distSq);
       const mag = magnetism[i];
 
       if (dist < maxRadius && dist > 0.01) {
@@ -221,10 +239,27 @@ export default function GalaxyParticles() {
       velocities[i3] += springX * returnStrength;
       velocities[i3 + 1] += springY * returnStrength;
       velocities[i3 + 2] += springZ * returnStrength;
+
+      // Settled (sub-pixel offsets, imperceptible colour delta) → go to sleep.
+      if (dist >= maxRadius) {
+        const v2 =
+          velocities[i3] * velocities[i3] +
+          velocities[i3 + 1] * velocities[i3 + 1] +
+          velocities[i3 + 2] * velocities[i3 + 2];
+        const off2 = springX * springX + springY * springY + springZ * springZ;
+        const cd =
+          Math.abs(baseColors[i3] - col[i3]) +
+          Math.abs(baseColors[i3 + 1] - col[i3 + 1]) +
+          Math.abs(baseColors[i3 + 2] - col[i3 + 2]);
+        if (v2 < 1e-10 && off2 < 1e-8 && cd < 5e-4) asleep[i] = 1;
+      }
     }
 
-    posAttr.needsUpdate = true;
-    colAttr.needsUpdate = true;
+    // Skip the GPU buffer upload on frames where every particle was asleep.
+    if (touched) {
+      posAttr.needsUpdate = true;
+      colAttr.needsUpdate = true;
+    }
   });
 
   return (

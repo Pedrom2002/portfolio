@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Preload } from "@react-three/drei";
+import { Preload, PerformanceMonitor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import GalaxyParticles from "./GalaxyParticles";
@@ -10,6 +10,11 @@ import StarField from "./StarField";
 import SolarSystem from "./SolarSystem";
 import ScrollCamera from "./ScrollCamera";
 import { useQuality } from "@/hooks/useQuality";
+import {
+  getInitialQualityLevel,
+  getQualityLevel,
+  setQualityLevel,
+} from "@/lib/quality";
 
 function SceneReadySignal() {
   const fired = useRef(false);
@@ -25,6 +30,11 @@ function SceneReadySignal() {
 export default function GalaxyCanvas() {
   const q = useQuality();
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+
+  // Weak-hardware hint, applied once on mount.
+  useEffect(() => {
+    setQualityLevel(getInitialQualityLevel());
+  }, []);
 
   // Pause rendering while tab is hidden — Three keeps requesting frames
   // otherwise, draining battery and CPU on background tabs.
@@ -52,13 +62,19 @@ export default function GalaxyCanvas() {
         gl={{
           antialias: false,
           alpha: true,
-          powerPreference: "high-performance",
+          powerPreference: "default",
         }}
         dpr={q.dpr}
         frameloop={frameloop}
         style={{ background: "transparent" }}
       >
         <Suspense fallback={null}>
+          {/* Step quality down only when FPS stays below 35. Never steps back
+              up, so there is no flicker on borderline machines. */}
+          <PerformanceMonitor
+            bounds={() => [35, 240]}
+            onDecline={() => setQualityLevel(getQualityLevel() + 1)}
+          />
           <SceneReadySignal />
           <ScrollCamera />
           <StarField />
